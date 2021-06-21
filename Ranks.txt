@@ -1,0 +1,5 @@
+Rank 1:110
+Rank 2:100
+Rank 3:100
+Rank 4:100
+Rank 5:100
