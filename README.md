@@ -1,6 +1,6 @@
 # Repo batalha_naval
 
-Pequeno e o meu primeiro projeto em python.
+My frist python project.
 
 Made with John Zelle library graphics.py. <br>
 [graphics.py Reference](https://mcsp.wartburg.edu/zelle/python/)
