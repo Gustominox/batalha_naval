@@ -45,8 +45,12 @@ class portaAvioes(peca):
 
 def coordStrtoInt(stri):
     arr = stri.split(';')
-    lin = 9 - (ord(arr[0]) - 65)
-    col = int(arr[1]) - 1
+    if len(arr) < 2:
+        lin = -1
+        col = -1
+    else:
+        lin = 9 - (ord(arr[0]) - 65)
+        col = int(arr[1]) - 1
     return lin, col
 
 def innitTupBar(win,jogador,computador,msg):
@@ -176,19 +180,19 @@ def acertaBarco(barcos,lin,col):
             if barcos[i].linhaInicial == lin:
                 for j in range(0,barcos[i].tmh):
                     if barcos[i].colunaInicial + j == col:
-                                barcos[i].estado[j] = 2;
+                                barcos[i].estado[j] = 2
                                 return barcos[i]
         elif barcos[i].orientacao == 'Vertical':    
             if barcos[i].colunaInicial == col:
                 for j in range(0,barcos[i].tmh):
                     if barcos[i].linhaInicial - j == lin:
-                                barcos[i].estado[j] = 2;
+                                barcos[i].estado[j] = 2
                                 return barcos[i]
 
-def jogada(lin,col,jogador,msg):
+def jogada(lin,col,jogador,msg,user):
     i = 0
     j = 0
-    step = 0
+    msg.setText('Joagada do Adversario.\nClica em qualquer lado \npara continuar.')
     tab = jogador.tabuleiro
     for linha in tab:
         if lin == i:
@@ -196,16 +200,19 @@ def jogada(lin,col,jogador,msg):
                 if col == j:
                     if tab[lin][col] == 0:
                         tab[lin][col] = 3
-                        msg.setText('Acertaste na Água')
+                        if user:
+                            msg.setText('Acertaste na Água!\nClica em qualquer lado \npara continuar.')
                     elif tab[lin][col] == 1:
                         tab[lin][col] = 2
                         barco = acertaBarco(jogador.barcos,lin,col)
-                        print(barco)
-                        msg.setText('Acertaste num Barco')
+                        if user:
+                            msg.setText('Acertaste num Barco!\nClica em qualquer lado \npara continuar.')
                         if barcoAfundou(barco):
-                            msg.setText('Afundaste um Barco')
+                            if user:
+                                msg.setText('Afundaste um Barco!\nClica em qualquer lado \npara continuar.')
                     else:
-                        msg.setText('Ja tinhas jogado\nnessa coordenada')
+                        if user:
+                            msg.setText('Ja tinhas jogado\nnessa coordenada')
                 j += 1
         i += 1
 
@@ -298,15 +305,20 @@ def inputEntry(win,modo):
     if modo == 'Setup':
         while True:
             click = win.getMouse()
-            vert.undraw()
-            txVert.undraw()
-            hori.undraw()
-            txHori.undraw()
+            
             if inside(click,vert):
                 ori = 'Vertical'
+                vert.undraw()
+                txVert.undraw()
+                hori.undraw()
+                txHori.undraw()
                 break
             elif inside(click,hori):
                 ori = 'Horizontal'
+                vert.undraw()
+                txVert.undraw()
+                hori.undraw()
+                txHori.undraw()
                 break
     else: 
         while True:
@@ -464,12 +476,12 @@ def menu():
     adere2.setSize(9)
     adere2.draw(win)
 
-    adere3 = Text(Point(4, 260),'A\nB\nC\nD\nE\nF\nG\nH\nI\nJ')
-    adere3.setSize(6)
+    adere3 = Text(Point(4, 257),'A\nB\nC\nD\nE\nF\nG\nH\nI\nJ')
+    adere3.setSize(7)
     adere3.draw(win)
 
-    adere4 = Text(Point(4, 60),'A\nB\nC\nD\nE\nF\nG\nH\nI\nJ')
-    adere4.setSize(6)
+    adere4 = Text(Point(4, 57),'A\nB\nC\nD\nE\nF\nG\nH\nI\nJ')
+    adere4.setSize(7)
     adere4.draw(win)
 
     while (True):
@@ -484,11 +496,12 @@ def menu():
             msg.setText('A sua Jogada:\nformato([A-J];[1-10])')
             jog, buffer = inputEntry(win,'Jogar')
             lin, col = coordStrtoInt( jog )
-            replay = jogada(lin,col,compu,msg)
+            replay = jogada(lin,col,compu,msg,True)
             desenhaTabs(win,player,compu)
             win.getMouse()
             lin ,col = ai()
-            replay = jogada(lin,col,player,msg)
+            replay = jogada(lin,col,player,msg,False)
+            desenhaTabs(win,player,compu)
             win.getMouse()
         
         if replay == 0:
